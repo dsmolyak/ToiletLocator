@@ -2,6 +2,7 @@ package com.example.dsmolyak.toiletlocator;
 
 import android.*;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -53,6 +54,14 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        final Button button = (Button) findViewById(R.id.backToMap);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent toilet = new Intent(button.getContext(), MapsActivity.class);
+                startActivity(toilet);
+            }
+        });
     }
 
     protected void onStart() {

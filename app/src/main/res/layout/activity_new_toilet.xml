@@ -11,6 +11,13 @@
     tools:context="com.example.dsmolyak.toiletlocator.NewToiletActivity">
 
     <Button
+        android:text="Back to Map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/backToMap" />
+
+    <Button
         android:text="Add Toilet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
