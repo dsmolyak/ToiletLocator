@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "333412515574",
+    "firebase_url": "https://toiletlocator-f1303.firebaseio.com",
+    "project_id": "toiletlocator-f1303",
+    "storage_bucket": "toiletlocator-f1303.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333412515574:android:4c49de910e42999d",
+        "android_client_info": {
+          "package_name": "com.example.dsmolyak.toiletlocator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333412515574-ou4ilavvhnvtaf8vbve5mpnkklu5mklb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dsmolyak.toiletlocator",
+            "certificate_hash": "3ED0A0FC8E6F833C1A9FEBA35B50076B35A14425"
+          }
+        },
+        {
+          "client_id": "333412515574-fe6hf3la5etb6ovj589e4nl291qc0lfc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNm3SVqZfw6hvPS56JNJ-N_Poxau23ds0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333412515574-fe6hf3la5etb6ovj589e4nl291qc0lfc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
