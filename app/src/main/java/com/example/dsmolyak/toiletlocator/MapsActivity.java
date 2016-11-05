@@ -1,20 +1,27 @@
 package com.example.dsmolyak.toiletlocator;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -53,11 +60,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.d("onMapReady", "hello");
         mMap = googleMap;
-
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+        
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng melo = new LatLng(-34, 151);
+        ArrayList<LatLng> locations = new ArrayList<LatLng>();
+        locations.add(new LatLng(melo.latitude+.01,melo.longitude+.01));
+        locations.add(new LatLng(melo.latitude-.01,melo.longitude+.01));
+        locations.add(new LatLng(melo.latitude+.01,melo.longitude-.01));
+        locations.add(new LatLng(melo.latitude-.01,melo.longitude-.01));
+
+        for (LatLng te : locations) {
+            mMap.addMarker(new MarkerOptions().position(te).title("Marker in "));
+        }
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(melo));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(melo,12));
     }
 
     /**
