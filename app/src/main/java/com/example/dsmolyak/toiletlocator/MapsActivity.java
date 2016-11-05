@@ -1,30 +1,29 @@
 package com.example.dsmolyak.toiletlocator;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
-
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     /**
@@ -32,8 +31,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    private GoogleApiClient mGoogleApiClient;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,26 +43,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
     }
-    Location mLastLocation;
 
-    public void onConnected(Bundle connectionHint) {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-            if (mLastLocation != null) {
-                System.out.println(mLastLocation.getLatitude()+ " "+mLastLocation.getLongitude());
-            }
-            System.out.println("hi");
-        }
-    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -80,23 +60,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.d("onMapReady", "hello");
         mMap = googleMap;
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
-        }
 
         // Add a marker in Sydney and move the camera
-        LatLng melo = new LatLng(-34, 151);
-        ArrayList<LatLng> locations = new ArrayList<LatLng>();
-        locations.add(new LatLng(melo.latitude+.01,melo.longitude+.01));
-        locations.add(new LatLng(melo.latitude-.01,melo.longitude+.01));
-        locations.add(new LatLng(melo.latitude+.01,melo.longitude-.01));
-        locations.add(new LatLng(melo.latitude-.01,melo.longitude-.01));
-
-        for (LatLng te : locations) {
-            mMap.addMarker(new MarkerOptions().position(te).title("Marker in "));
-        }
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(melo));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(melo,12));
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     /**
@@ -133,10 +101,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
     }
 }
