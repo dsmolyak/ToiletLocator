@@ -18,32 +18,6 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/addToiletButton" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/latitudeTextField"
-        android:hint="Latitude"
-        android:layout_below="@+id/addToiletButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:singleLine="true"
-        android:selectAllOnFocus="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
-        android:id="@+id/longitudeTextField"
-        android:hint="Longitude"
-        android:layout_alignTop="@+id/latitudeTextField"
-        android:layout_alignLeft="@+id/latitudeTextField"
-        android:layout_alignStart="@+id/latitudeTextField"
-        android:layout_marginTop="61dp"
-        android:selectAllOnFocus="true" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,5 +34,37 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:id="@+id/showLongitude" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/longitudeTextField"
+        android:layout_marginTop="42dp"
+        android:selectAllOnFocus="true"
+        android:layout_below="@+id/latitudeTextField"
+        android:layout_alignLeft="@+id/latitudeTextField"
+        android:layout_alignStart="@+id/latitudeTextField" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/latitudeTextField"
+        android:layout_marginTop="23dp"
+        android:selectAllOnFocus="true"
+        android:layout_below="@+id/addLocationButton"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="Set Location to Current Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addLocationButton"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/addToiletButton"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
