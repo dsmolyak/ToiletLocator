@@ -184,6 +184,8 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
 
         mRef.child("numValues").setValue(mSize);
 
+
+
     }
 
     public void onConnectionSuspended(int i) {

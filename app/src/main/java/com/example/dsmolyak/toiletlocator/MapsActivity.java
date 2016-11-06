@@ -135,6 +135,7 @@ public class MapsActivity extends AppCompatActivity implements
                 NewToiletActivity.addToilet(point.latitude, point.longitude, 3);
 
                 mMap.addMarker(new MarkerOptions().position(point));
+                Toast.makeText(MapsActivity.this, "Toiled Added!", Toast.LENGTH_SHORT).show();
             }
         });
     }
