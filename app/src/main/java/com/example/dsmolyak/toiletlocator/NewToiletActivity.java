@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,7 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     TextView mLatitudeText, mLongitudeText;
     static EditText mLatitude;
     static EditText mLongitude;
+    RatingBar mRatingBar;
     static FirebaseDatabase db = FirebaseDatabase.getInstance();
     static DatabaseReference mRef = db.getReference();
     static final int REQUEST_LOCATION=1;
@@ -43,7 +45,7 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        mRatingBar = (RatingBar) findViewById(R.id.ratingBar);
 
 
         setContentView(R.layout.activity_new_toilet);
@@ -80,8 +82,11 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
 
         mAddToilet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                float rating = 1;
+                //float rating = mRatingBar.getRating();
+                Log.d("rating", ""+ rating);
                 if(!(mLatitude.getText().equals("") || mLongitude.getText().equals(""))) {
-                    addToilet(Double.parseDouble(mLatitude.getText().toString()), Double.parseDouble(mLongitude.getText().toString()));
+                    addToilet(Double.parseDouble(mLatitude.getText().toString()), Double.parseDouble(mLongitude.getText().toString()), rating);
                 }
                 mLatitude.setText("");
                 mLongitude.setText("");
@@ -113,10 +118,7 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     public void onConnected(Bundle connectionHint) {
         Log.d("test", "test");
 
-
         askLocation();
-
-
     }
 
     public void askLocation(){
@@ -152,7 +154,9 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
         }
     }
 
-    public static void addToilet(double lat, double lon) {
+    public static void addToilet(double lat, double lon, float rating) {
+        Log.d("add?", "Trying to add toilet");
+
         GeoFire loc = new GeoFire(mRef);
         ValueEventListener numValueListener = new ValueEventListener() {
             @Override
@@ -167,12 +171,12 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
             }
         };
         mRef.child("numValues").addValueEventListener(numValueListener);
+        //mRef.child("numValues").child("init").setValue("1");
 
-        if (mSize != 0)
-            loc.setLocation("location" + (mSize + 1), new GeoLocation(lat, lon));
-        else {
-            loc.setLocation("location1", new GeoLocation(lat, lon));
-        }
+        String tag = "location" + (mSize + 1);
+        loc.setLocation(tag, new GeoLocation(lat, lon));//add to the database
+
+        //mRef.child(tag).child("Rating").setValue(rating);
 
         mSize++;
 

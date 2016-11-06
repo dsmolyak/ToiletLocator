@@ -132,7 +132,7 @@ public class MapsActivity extends AppCompatActivity implements
 
             @Override
             public void onMapLongClick(LatLng point) {
-                NewToiletActivity.addToilet(point.latitude, point.longitude);
+                NewToiletActivity.addToilet(point.latitude, point.longitude, 3);
 
                 mMap.addMarker(new MarkerOptions().position(point));
             }

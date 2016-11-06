@@ -21,8 +21,8 @@
         android:text="Add Toilet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:layout_below="@+id/ratingBar"
         android:id="@+id/addToiletButton" />
 
     <TextView
@@ -47,32 +47,38 @@
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:ems="10"
-        android:id="@+id/latitudeTextField"
-        android:layout_marginTop="23dp"
-        android:selectAllOnFocus="true"
-        android:layout_below="@+id/addLocationButton"
-        android:layout_centerHorizontal="true"
-        android:hint="latitude" />
-
-    <Button
-        android:text="Set Location to Current Location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/addLocationButton"
-        android:layout_marginTop="18dp"
-        android:layout_below="@+id/addToiletButton"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:ems="10"
         android:id="@+id/longitudeTextField"
         android:selectAllOnFocus="true"
         android:hint="longitude"
         android:layout_below="@+id/latitudeTextField"
         android:layout_alignLeft="@+id/latitudeTextField"
         android:layout_alignStart="@+id/latitudeTextField" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/latitudeTextField"
+        android:layout_marginTop="40dp"
+        android:selectAllOnFocus="true"
+        android:hint="latitude"
+        android:layout_below="@+id/backToMap"
+        android:layout_centerHorizontal="true" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addLocationButton"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ratingBar" />
+
+    <Button
+        android:text="Set Location to Current Location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/addLocationButton"
+        android:layout_below="@+id/longitudeTextField"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
