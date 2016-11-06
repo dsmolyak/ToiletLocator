@@ -85,8 +85,10 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
                 float rating = 1;
                 //float rating = mRatingBar.getRating();
                 Log.d("rating", ""+ rating);
-                if(!(mLatitude.getText().equals("") || mLongitude.getText().equals(""))) {
+                try {
                     addToilet(Double.parseDouble(mLatitude.getText().toString()), Double.parseDouble(mLongitude.getText().toString()), rating);
+                }catch(NumberFormatException e){
+                    Toast.makeText(NewToiletActivity.this, "Please enter a valid location", Toast.LENGTH_SHORT).show();
                 }
                 mLatitude.setText("");
                 mLongitude.setText("");
