@@ -142,7 +142,7 @@ public class MapsActivity extends AppCompatActivity implements
 
         if(mLastLocation!=null) {
             GeoQuery query = location.queryAtLocation(new GeoLocation(mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude()), 1);
+                    mLastLocation.getLongitude()), 12000);
 
             query.addGeoQueryEventListener(new GeoQueryEventListener() {
                 @Override

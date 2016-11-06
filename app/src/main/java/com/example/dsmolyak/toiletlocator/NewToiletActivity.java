@@ -21,8 +21,11 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class NewToiletActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     GoogleApiClient mGoogleApiClient;
@@ -33,14 +36,27 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference mRef = db.getReference();
     static final int REQUEST_LOCATION=1;
-    static Integer mSize;
+    static int mSize = 0;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(mSize!=null){
-            mSize=1;
-        }
+
+
+        ValueEventListener numValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mSize = dataSnapshot.getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting numValues failed, log a message
+                Log.w("numValues:onCancelled", databaseError.toException());
+            }
+        };
+        mRef.child("numValues").addValueEventListener(numValueListener);
+
         setContentView(R.layout.activity_new_toilet);
 
         mAddToilet = (Button) findViewById(R.id.addToiletButton);
@@ -87,17 +103,18 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
                     GeoFire loc=new GeoFire(mRef);
 //                    newLocationRef.setValue(new LatLng(Double.parseDouble(mLatitude.getText().toString()),
 //                            Double.parseDouble(mLongitude.getText().toString())));
-                    if(mSize!=null)
+                    if(mSize!=0)
                         loc.setLocation("location" + mSize, new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
-                            Double.parseDouble(mLongitude.getText().toString())));
+                                Double.parseDouble(mLongitude.getText().toString())));
                     else{
                         loc.setLocation("location1", new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
                                 Double.parseDouble(mLongitude.getText().toString())));
-                        mSize=1;
                     }
                     mLatitude.setText("");
                     mLongitude.setText("");
                     mSize++;
+
+                    mRef.child("numValues").setValue(mSize);
                 }
             }
         });
@@ -128,7 +145,7 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
         Log.d("test", "test");
 
 
-            askLocation();
+        askLocation();
 
 
     }
