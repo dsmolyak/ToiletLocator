@@ -44,19 +44,7 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
         super.onCreate(savedInstanceState);
 
 
-        ValueEventListener numValueListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mSize = dataSnapshot.getValue(Integer.class);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting numValues failed, log a message
-                Log.w("numValues:onCancelled", databaseError.toException());
-            }
-        };
-        mRef.child("numValues").addValueEventListener(numValueListener);
 
         setContentView(R.layout.activity_new_toilet);
 
@@ -165,17 +153,30 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     }
 
     public static void addToilet(double lat, double lon) {
-            GeoFire loc = new GeoFire(mRef);
-
-            if (mSize != 0)
-                loc.setLocation("location" + mSize, new GeoLocation(lat, lon));
-            else {
-                loc.setLocation("location1", new GeoLocation(lat, lon));
+        GeoFire loc = new GeoFire(mRef);
+        ValueEventListener numValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mSize = dataSnapshot.getValue(Integer.class);
             }
 
-            mSize++;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting numValues failed, log a message
+                Log.w("numValues:onCancelled", databaseError.toException());
+            }
+        };
+        mRef.child("numValues").addValueEventListener(numValueListener);
 
-            mRef.child("numValues").setValue(mSize);
+        if (mSize != 0)
+            loc.setLocation("location" + (mSize + 1), new GeoLocation(lat, lon));
+        else {
+            loc.setLocation("location1", new GeoLocation(lat, lon));
+        }
+
+        mSize++;
+
+        mRef.child("numValues").setValue(mSize);
 
     }
 
