@@ -1,13 +1,12 @@
 package com.example.dsmolyak.toiletlocator;
 
-import android.*;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,28 +16,31 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Permission;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class NewToiletActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
     Button mAddToilet, mInputCurrLocation;
+    Location mLastLoc= MapsActivity.mLastLocation;
     TextView mLatitudeText, mLongitudeText;
     EditText mLatitude, mLongitude;
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference mRef = db.getReference();
     static final int REQUEST_LOCATION=1;
-    int mSize = 0;
+    static Integer mSize;
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(mSize!=null){
+            mSize=1;
+        }
         setContentView(R.layout.activity_new_toilet);
 
         mAddToilet = (Button) findViewById(R.id.addToiletButton);
@@ -74,9 +76,25 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
         mAddToilet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if(!(mLatitude.getText().equals("") || mLongitude.getText().equals(""))) {
-                    DatabaseReference newLocationRef = mRef.child("location" + mSize);
-                    newLocationRef.setValue(new LatLng(Double.parseDouble(mLatitude.getText().toString()),
+//                    DatabaseReference newLocationRef;
+//                    if(mSize!=null) {
+//                        newLocationRef = mRef.child("location" + mSize);
+//                    }
+//                    else{
+//                        newLocationRef=mRef.child("location1");
+//                        mSize=1;
+//                    }
+                    GeoFire loc=new GeoFire(mRef);
+//                    newLocationRef.setValue(new LatLng(Double.parseDouble(mLatitude.getText().toString()),
+//                            Double.parseDouble(mLongitude.getText().toString())));
+                    if(mSize!=null)
+                        loc.setLocation("location" + mSize, new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
                             Double.parseDouble(mLongitude.getText().toString())));
+                    else{
+                        loc.setLocation("location1", new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
+                                Double.parseDouble(mLongitude.getText().toString())));
+                        mSize=1;
+                    }
                     mLatitude.setText("");
                     mLongitude.setText("");
                     mSize++;
@@ -86,8 +104,14 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
 
         mInputCurrLocation.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                mLatitude.setText(String.valueOf(mLastLocation.getLatitude()));
-                mLongitude.setText(String.valueOf(mLastLocation.getLongitude()));
+                if(mLastLoc == null) {
+                    askLocation();
+                }
+                int permissionCheck = ContextCompat.checkSelfPermission(NewToiletActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                    mLatitude.setText(String.valueOf(mLastLoc.getLatitude()));
+                    mLongitude.setText(String.valueOf(mLastLoc.getLongitude()));
+                }
             }
 
         });
@@ -101,7 +125,12 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
 
 
     public void onConnected(Bundle connectionHint) {
-      askLocation();
+        Log.d("test", "test");
+
+
+            askLocation();
+
+
     }
 
     public void askLocation(){
@@ -109,27 +138,27 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this,
                         android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 Toast.makeText(this, "Need Location to Find Toilets", Toast.LENGTH_SHORT).show();
             }
 
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_LOCATION);
 
             return;
         }
 
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+        mLastLoc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
         Log.d("here", "here1");
         if(requestCode==REQUEST_LOCATION){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED){
-                if (mLastLocation != null) {
-                    mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-                    mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
+                if (mLastLoc != null) {
+                    mLatitudeText.setText(String.valueOf(mLastLoc.getLatitude()));
+                    mLongitudeText.setText(String.valueOf(mLastLoc.getLongitude()));
                 }
             }else{
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
