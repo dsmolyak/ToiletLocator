@@ -132,6 +132,17 @@ public class MapsActivity extends AppCompatActivity implements
 
         mMap.setOnMyLocationButtonClickListener(this);
         enableMyLocation();
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+            @Override
+            public void onMapLongClick(LatLng point) {
+                // TODO Auto-generated method stub
+                NewToiletActivity.addToilet(point.latitude, point.longitude);
+
+                mMap.addMarker(new MarkerOptions().position(point));
+            }
+        });
     }
 
     public void onConnected(Bundle bundle){
@@ -295,4 +306,6 @@ public class MapsActivity extends AppCompatActivity implements
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
+
+
 }

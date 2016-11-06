@@ -32,9 +32,10 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     Button mAddToilet, mInputCurrLocation;
     Location mLastLoc= MapsActivity.mLastLocation;
     TextView mLatitudeText, mLongitudeText;
-    EditText mLatitude, mLongitude;
-    FirebaseDatabase db = FirebaseDatabase.getInstance();
-    DatabaseReference mRef = db.getReference();
+    static EditText mLatitude;
+    static EditText mLongitude;
+    static FirebaseDatabase db = FirebaseDatabase.getInstance();
+    static DatabaseReference mRef = db.getReference();
     static final int REQUEST_LOCATION=1;
     static int mSize = 0;
 
@@ -92,30 +93,10 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
         mAddToilet.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 if(!(mLatitude.getText().equals("") || mLongitude.getText().equals(""))) {
-//                    DatabaseReference newLocationRef;
-//                    if(mSize!=null) {
-//                        newLocationRef = mRef.child("location" + mSize);
-//                    }
-//                    else{
-//                        newLocationRef=mRef.child("location1");
-//                        mSize=1;
-//                    }
-                    GeoFire loc=new GeoFire(mRef);
-//                    newLocationRef.setValue(new LatLng(Double.parseDouble(mLatitude.getText().toString()),
-//                            Double.parseDouble(mLongitude.getText().toString())));
-                    if(mSize!=0)
-                        loc.setLocation("location" + mSize, new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
-                                Double.parseDouble(mLongitude.getText().toString())));
-                    else{
-                        loc.setLocation("location1", new GeoLocation(Double.parseDouble(mLatitude.getText().toString()),
-                                Double.parseDouble(mLongitude.getText().toString())));
-                    }
-                    mLatitude.setText("");
-                    mLongitude.setText("");
-                    mSize++;
-
-                    mRef.child("numValues").setValue(mSize);
+                    addToilet(Double.parseDouble(mLatitude.getText().toString()), Double.parseDouble(mLongitude.getText().toString()));
                 }
+                mLatitude.setText("");
+                mLongitude.setText("");
             }
         });
 
@@ -182,6 +163,22 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
             }
         }
     }
+
+    public static void addToilet(double lat, double lon) {
+            GeoFire loc = new GeoFire(mRef);
+
+            if (mSize != 0)
+                loc.setLocation("location" + mSize, new GeoLocation(lat, lon));
+            else {
+                loc.setLocation("location1", new GeoLocation(lat, lon));
+            }
+
+            mSize++;
+
+            mRef.child("numValues").setValue(mSize);
+
+    }
+
     public void onConnectionSuspended(int i) {
 
     }
@@ -189,4 +186,6 @@ public class NewToiletActivity extends AppCompatActivity implements GoogleApiCli
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
 }
